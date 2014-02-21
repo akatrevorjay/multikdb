@@ -1,0 +1,9 @@
+
+import os
+
+default_path = os.path.expanduser('~/pantek/kp/dbs')
+
+kdbs = dict(
+    dbfilenameminusextensiontrevorj=dict(master_password='BLAH'),
+    otherdb=dict(master_password='OTHERBLAH'),
+)
