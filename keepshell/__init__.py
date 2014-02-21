@@ -22,7 +22,8 @@ class KeepassUnified(object):
         self._dbs = dict()
         for name, conf in kdbs.iteritems():
             if 'filename' not in conf:
-                conf['filename'] = '%s.kdb' % name
+                conf['filename'] = os.path.join(config.default_path,
+                                                '%s.kdb' % name)
             if not os.path.isfile(conf['filename']):
                 log.warning('Could not load kdb "%s".', conf['filename'])
                 continue
@@ -77,34 +78,41 @@ class KeepassUnified(object):
 def search():
     ku = KeepassUnified(config.kdbs)
     args = sys.argv[1:]
-    if args:
-        pprint(ku.simple_search(args[0]))
+    if not args:
+        return
+    pprint(ku.search(*args))
 
 
 def ssh():
     ku = KeepassUnified(config.kdbs)
     args = sys.argv[1:]
-    if args:
-        results = ku.simple_search(args[0])
-        pprint(results)
+    if not args:
+        return
+    results = ku.search(*args)
+    pprint(results)
     if len(results) == 1:
         entry = results[0]
 
+        host = entry['title']
+        username = entry['username']
+        password = entry['password']
+
+        ## TODO For some reason sshpass will *not* work this script.
+        ## it just returns "permission denied".
         #env = os.environ.copy()
         #env = dict()
-        #env['SSHPASS'] = entry['password']
+        #env['SSHPASS'] = password
         ##pprint(env)
         #args = ['/usr/bin/sshpass',
         #           '-e',
-        #           #'-p%s' % entry['password'],
-        #           #'-p', entry['password'],
-        #           #'-p"%s"' % entry['password'],
-        #           #'-p %s' % entry['password'],
-
+        #           #'-p%s' % password,
+        #           #'-p', password,
+        #           #'-p"%s"' % password,
+        #           #'-p %s' % password,
         #           '/usr/bin/ssh',
         #           #'-o', 'ControlMaster=auto',
         #           '-o', 'StrictHostKeyChecking=no',
-        #           '%s@%s' % (entry['username'], entry['title']),
+        #           '%s@%s' % (username, host),
         #           env]
         #pprint(args)
         #os.execle(*args)
@@ -115,10 +123,7 @@ def ssh():
         #    entry['title'],
         #    )
 
-        host = entry['title']
-        username = entry['username']
-        password = entry['password']
-
+        # pexpect sucks a hard one for interactive SSH but it's all we got as of yet.
         ssh = pxssh.pxssh()
         ssh.login(host, username, password)
         ssh.interact()
