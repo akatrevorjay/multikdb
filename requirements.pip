@@ -1,0 +1,6 @@
+Pygments==1.6
+keepass==1.1
+pexpect==3.1
+#pycrypto==2.6.1
+#six==1.5.2
+#urwid==1.2.0
