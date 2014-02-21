@@ -7,7 +7,17 @@ import os
 import re
 import sys
 
-from .keepass import kpdb
+try:
+    from keepass import kpdb
+except ImportError:
+    from .keepass import kpdb
+
+try:
+    from pexpect import pxssh
+except ImportError:
+    log.warning('Missing pexpect.pxssh.')
+    pass
+
 from . import config
 from .pretty import pp as pprint
 #from pprint import pprint
