@@ -7,6 +7,10 @@ import os
 import re
 import sys
 
+from . import config
+from .pretty import pp as pprint
+#from pprint import pprint
+
 try:
     from keepass import kpdb
 except ImportError:
@@ -17,10 +21,6 @@ try:
 except ImportError:
     log.warning('Missing pexpect.pxssh.')
     pass
-
-from . import config
-from .pretty import pp as pprint
-#from pprint import pprint
 
 
 class KeepassUnified(object):

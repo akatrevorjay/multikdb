@@ -1,4 +1,7 @@
 
+import logging
+logging.basicConfig()
+
 import os
 
 default_path = os.path.expanduser('~/pantek/kp/dbs')
