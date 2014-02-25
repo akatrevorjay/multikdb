@@ -1,0 +1,14 @@
+To install (easy way):
+  $ sudo pip install -r requirements.pip
+
+To configure:
+  $ cp -av multikdb/config.py.example multikdb/config.py
+  $ vi multikdb/config.py
+    ^ Change the path to your kdbs, enter them in with their master passwords
+
+To use:
+  $ ./kpquery [search terms]
+    ^ Will search all of your databases and return any results
+  $ ./kpssh [search terms]
+    ^ Will search all of your databases and if you only get one result, will spawn an SSH session and attempt to login for you.
+
