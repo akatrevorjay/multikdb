@@ -11,6 +11,9 @@ from . import config
 from .pretty import pp as pprint
 #from pprint import pprint
 
+flags = dict(pxssh=True,
+             gtk=True)
+
 try:
     from keepass import kpdb
 except ImportError:
@@ -19,8 +22,15 @@ except ImportError:
 try:
     from pexpect import pxssh
 except ImportError:
-    log.warning('Missing pexpect.pxssh.')
-    pass
+    log.warning('Missing pexpect.pxssh')
+    flags['pxssh'] = False
+
+try:
+    import gtk
+    import gobject
+except ImportError:
+    log.warning('Missing PyGTK')
+    flags['gtk'] = False
 
 
 class KeepassUnified(object):
@@ -90,7 +100,21 @@ def search():
     args = sys.argv[1:]
     if not args:
         return
-    pprint(ku.search(*args))
+    results = ku.search(*args)
+    pprint(results)
+    if len(results) == 1:
+        entry = results[0]
+
+        host = entry['title']
+        username = entry['username']
+        password = entry['password']
+
+        clip = gtk.Clipboard()
+        #clip.set_can_store([('UTF8_STRING', 0, 0)])
+        clip.set_text(password)
+        log.info('Copied password to clipboard')
+        gobject.timeout_add(3000, gtk.main_quit)
+        gtk.main()
 
 
 def ssh():
