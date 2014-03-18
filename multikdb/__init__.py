@@ -79,13 +79,13 @@ class KeepassUnified(object):
         for param in params:
             found = False
             for k, v in entry.iteritems():
-                if re.search(param, str(v), re.MULTILINE):
+                if re.search(param, str(v), re.M + re.I):
                     found = True
                     break
             if not found:
                 return False
         for k, v in kwparams.iteritems():
-            if not re.search(v, str(entry.get(k)), re.MULTILINE):
+            if not re.search(v, str(entry.get(k)), re.M + re.I):
                 return False
         return True
 
