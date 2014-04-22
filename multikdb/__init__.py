@@ -13,11 +13,6 @@ from .pretty import pp as pprint
 
 flags = dict(pxssh=True,
              gtk=True)
-try:
-    import re
-except ImportError:
-    log.warning('Missing regex support')
-    flags['regex'] = False
 
 try:
     from keepass import kpdb
@@ -110,12 +105,6 @@ def search():
     if len(results) == 1:
         entry = results[0]
 
-       #Use a regex on the URL first, and if no match, use title
-        m = re.search(r'^ssh://(.*?)\s+.*$', entry['url'])
-        host=m.group(1)
-        if not host:
-                host = entry['title']
-
         username = entry['username']
         password = entry['password']
 
@@ -136,12 +125,12 @@ def ssh():
     pprint(results)
     if len(results) == 1:
         entry = results[0]
-        
-        #Use a regex on the URL, if no match use the title
-        m = re.search(r'^ssh://(.*?)\s+.*$', entry['url'])
-        host=m.group(1)
-        if not host:
-                host = entry['title']
+
+        # Use a regex on the URL, if no match use the title
+        host = entry['title']
+        m = re.search(r'^ssh://(.*?)\s+.*$', entry.get('url'))
+        if m:
+            host = m.group(1)
 
         username = entry['username']
         password = entry['password']
